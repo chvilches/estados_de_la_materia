@@ -613,6 +613,9 @@
 
       <div class="transform-box">
         <h3>🔄 Las Transformaciones Mágicas</h3>
+        <p style="text-align:center; color:var(--text-soft); margin-bottom:16px; font-size:0.9rem;">
+          Cada flechita es un cambio de estado. Cuando se pone <strong>calor</strong> 🔥 subimos energía; cuando se <strong>enfría</strong> ❄️ la bajamos.
+        </p>
         <div class="transform-grid">
           <div class="transform-card">
             <div class="flow">🧊 ➡️ 💧</div>
@@ -633,6 +636,26 @@
             <div class="flow">💨 ➡️ 💧</div>
             <h4>Condensación</h4>
             <p>El <strong>gas</strong> se vuelve <strong>líquido</strong>. Ej.: las gotitas en el vaso frío 🥤</p>
+          </div>
+          <div class="transform-card">
+            <div class="flow">🧊 ➡️ 💨</div>
+            <h4>Sublimación</h4>
+            <p>El <strong>sólido</strong> pasa directo a <strong>gas</strong>, ¡sin ser líquido! Ej.: el hielo seco y la naftalina 🌫️</p>
+          </div>
+          <div class="transform-card">
+            <div class="flow">💨 ➡️ 🧊</div>
+            <h4>Sublimación inversa</h4>
+            <p>El <strong>gas</strong> pasa directo a <strong>sólido</strong>. Ej.: la escarcha que aparece en las plantas al amanecer ❄️</p>
+          </div>
+          <div class="transform-card">
+            <div class="flow">💨 ➡️ ⚡</div>
+            <h4>Ionización</h4>
+            <p>El <strong>gas</strong> se vuelve <strong>plasma</strong> cuando recibe muchísima energía. Ej.: un rayo en el cielo 🌩️</p>
+          </div>
+          <div class="transform-card">
+            <div class="flow">⚡ ➡️ 💨</div>
+            <h4>Recombinación</h4>
+            <p>El <strong>plasma</strong> se enfría y vuelve a ser <strong>gas</strong>. Ej.: cuando el rayo se apaga y queda aire caliente ✨</p>
           </div>
         </div>
       </div>
@@ -859,6 +882,18 @@
       opts: ["Sólido", "Líquido", "Gaseoso", "Plasma"],
       correct: 3,
       hint: "Es el CUARTO estado: súper caliente y lleno de energía."
+    },
+    {
+      q: "El hielo seco pasa directo de sólido a gas. ¿Cómo se llama ese proceso?",
+      opts: ["Fusión", "Sublimación", "Evaporación", "Condensación"],
+      correct: 1,
+      hint: "Es cuando un sólido se vuelve gas SIN pasar por líquido."
+    },
+    {
+      q: "La escarcha de la mañana aparece cuando el vapor del aire pasa directo a sólido. Eso se llama...",
+      opts: ["Solidificación", "Condensación", "Sublimación inversa", "Fusión"],
+      correct: 2,
+      hint: "Es como la sublimación, pero al revés: gas ➡️ sólido."
     }
   ];
 
@@ -963,7 +998,8 @@
     { text: "El proceso donde el agua se vuelve hielo es la", emoji: "❄️", answers: ["solidificacion", "solidificación"], hint: "De líquido a sólido." },
     { text: "Las nubes y el vapor son ejemplos de estado", emoji: "☁️", answers: ["gaseoso", "gas"], hint: "No tiene forma fija y ocupa todo el espacio." },
     { text: "Cuando el vapor de agua se transforma en gotitas se llama", emoji: "💧", answers: ["condensacion", "condensación"], hint: "De gas a líquido 🥤" },
-    { text: "El Sol y los rayos de tormenta son ejemplos del cuarto estado llamado", emoji: "⚡", answers: ["plasma"], hint: "Es como un gas súper caliente y brillante." }
+    { text: "El Sol y los rayos de tormenta son ejemplos del cuarto estado llamado", emoji: "⚡", answers: ["plasma"], hint: "Es como un gas súper caliente y brillante." },
+    { text: "Cuando un sólido pasa directo a gas, sin ser líquido, se llama", emoji: "🌫️", answers: ["sublimacion", "sublimación"], hint: "El hielo seco lo hace: se convierte en humito ✨" }
   ];
 
   function normalize(s) {
