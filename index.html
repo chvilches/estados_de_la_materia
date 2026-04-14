@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>🌈 Academia de los Estados de la Materia</title>
+<style>
+  :root {
+    --bg-1: #fef6ff;
+    --bg-2: #e7f5ff;
+    --pink: #ffb3d1;
+    --pink-strong: #ff7eb3;
+    --blue: #a8d8ff;
+    --blue-strong: #5fa8e8;
+    --green: #b8f2c9;
+    --green-strong: #4fcc7c;
+    --yellow: #fff2a8;
+    --yellow-strong: #ffd84d;
+    --purple: #d8c2ff;
+    --purple-strong: #a480f2;
+    --orange: #ffd1a8;
+    --orange-strong: #ff9a4d;
+    --text: #4a3b6b;
+    --text-soft: #6b5d8a;
+    --card-bg: #ffffff;
+    --shadow: 0 10px 30px rgba(164, 128, 242, 0.18);
+    --shadow-soft: 0 4px 14px rgba(164, 128, 242, 0.12);
+    --radius: 22px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Comic Sans MS", "Trebuchet MS", sans-serif;
+    color: var(--text);
+    background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    min-height: 100vh;
+    padding: 20px;
+    overflow-x: hidden;
+  }
+
+  .app {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  header.hero {
+    text-align: center;
+    padding: 24px 16px 10px;
+    position: relative;
+  }
+
+  header.hero h1 {
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    background: linear-gradient(90deg, var(--pink-strong), var(--purple-strong), var(--blue-strong));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+
+  header.hero p {
+    color: var(--text-soft);
+    font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+  }
+
+  /* Stars counter */
+  .stars-box {
+    position: sticky;
+    top: 10px;
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    margin: 10px 0 18px;
+  }
+  .stars {
+    background: linear-gradient(135deg, #fff8d9, #ffe8a8);
+    border: 3px solid var(--yellow-strong);
+    border-radius: 999px;
+    padding: 10px 22px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    box-shadow: var(--shadow-soft);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #8a6b1f;
+  }
+  .stars .count {
+    transition: transform 0.3s cubic-bezier(.3,1.6,.5,1);
+    display: inline-block;
+  }
+  .stars.pulse .count {
+    transform: scale(1.5);
+  }
+
+  /* Navigation */
+  nav.menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  nav.menu button {
+    font: inherit;
+    font-weight: bold;
+    font-size: 0.95rem;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    background: var(--card-bg);
+    color: var(--text);
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+  }
+  nav.menu button:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+  }
+  nav.menu button.active {
+    background: linear-gradient(135deg, var(--pink-strong), var(--purple-strong));
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  /* Sections */
+  section.screen {
+    display: none;
+    animation: fadeIn 0.5s ease;
+  }
+  section.screen.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-title {
+    text-align: center;
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    margin-bottom: 18px;
+    color: var(--purple-strong);
+  }
+
+  /* Flashcards */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+    margin-bottom: 28px;
+  }
+  .flashcard {
+    perspective: 1000px;
+    height: 260px;
+    cursor: pointer;
+  }
+  .flashcard-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.7s;
+  }
+  .flashcard.flipped .flashcard-inner {
+    transform: rotateY(180deg);
+  }
+  .flashcard-front, .flashcard-back {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: var(--radius);
+    padding: 22px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .flashcard-front { font-size: 1.3rem; font-weight: bold; }
+  .flashcard-front .big-emoji { font-size: 4.5rem; margin-bottom: 10px; }
+  .flashcard-back { transform: rotateY(180deg); font-size: 0.95rem; line-height: 1.5; }
+  .flashcard-back strong { display: block; margin-bottom: 8px; font-size: 1.1rem; }
+  .flashcard.solid .flashcard-front, .flashcard.solid .flashcard-back { background: linear-gradient(135deg, #e0e8ff, var(--blue)); }
+  .flashcard.liquid .flashcard-front, .flashcard.liquid .flashcard-back { background: linear-gradient(135deg, #d6f0ff, #7fc7f0); color: #103a5c; }
+  .flashcard.gas .flashcard-front, .flashcard.gas .flashcard-back { background: linear-gradient(135deg, #fff0fa, var(--pink)); }
+  .flashcard .hint { margin-top: 12px; font-size: 0.8rem; opacity: 0.75; font-weight: normal; }
+
+  /* Transformations diagram */
+  .transform-box {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 22px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+  }
+  .transform-box h3 {
+    text-align: center;
+    margin-bottom: 18px;
+    color: var(--purple-strong);
+    font-size: 1.3rem;
+  }
+  .transform-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+  }
+  .transform-card {
+    padding: 16px;
+    border-radius: 18px;
+    text-align: center;
+    background: linear-gradient(135deg, #fff, #fef6ff);
+    border: 2px dashed var(--purple);
+    transition: transform 0.3s;
+  }
+  .transform-card:hover { transform: translateY(-4px) rotate(-1deg); }
+  .transform-card .flow {
+    font-size: 1.6rem;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .transform-card h4 {
+    color: var(--pink-strong);
+    margin: 6px 0;
+    font-size: 1.1rem;
+  }
+  .transform-card p {
+    font-size: 0.85rem;
+    color: var(--text-soft);
+    line-height: 1.4;
+  }
+
+  /* Landscape */
+  .landscape-wrap {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 18px;
+    box-shadow: var(--shadow);
+  }
+  .landscape-wrap p.instructions {
+    text-align: center;
+    margin-bottom: 14px;
+    font-size: 1.05rem;
+    color: var(--text-soft);
+  }
+  .landscape {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 18px;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #ffe3a8 0%, #ffd0e6 20%, #c9e6ff 50%, #8fd19e 80%);
+  }
+  .landscape svg { width: 100%; height: 100%; display: block; }
+  .hotspot {
+    position: absolute;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: transform 0.25s;
+  }
+  .hotspot:hover { transform: scale(1.15); }
+  .hotspot::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 3px dashed rgba(255, 255, 255, 0.7);
+    animation: spin 6s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .popup-layer {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(74, 59, 107, 0.35);
+    z-index: 200;
+    padding: 20px;
+  }
+  .popup-layer.show { display: flex; animation: fadeIn 0.25s ease; }
+  .popup {
+    background: white;
+    border-radius: var(--radius);
+    padding: 30px 26px;
+    text-align: center;
+    max-width: 380px;
+    box-shadow: var(--shadow);
+    animation: bounceIn 0.45s cubic-bezier(.3,1.6,.5,1);
+  }
+  @keyframes bounceIn {
+    0% { transform: scale(0.6); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .popup .pop-emoji { font-size: 4rem; margin-bottom: 10px; }
+  .popup h3 { color: var(--pink-strong); margin-bottom: 8px; font-size: 1.6rem; }
+  .popup p { color: var(--text-soft); margin-bottom: 16px; }
+  .popup button {
+    background: linear-gradient(135deg, var(--pink-strong), var(--purple-strong));
+    color: white;
+    border: none;
+    border-radius: 999px;
+    padding: 10px 22px;
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+  }
+
+  /* Quiz */
+  .quiz-box {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .progress-track {
+    height: 12px;
+    background: #f0e6ff;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 18px;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--green-strong), var(--blue-strong));
+    transition: width 0.5s;
+  }
+  .question {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 16px;
+    text-align: center;
+    line-height: 1.4;
+  }
+  .options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .option {
+    background: linear-gradient(135deg, #fff, #f5f0ff);
+    border: 3px solid var(--purple);
+    border-radius: 16px;
+    padding: 16px;
+    font: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s, border-color 0.3s;
+    color: var(--text);
+  }
+  .option:hover:not(:disabled) {
+    transform: translateY(-3px);
+    background: #f5f0ff;
+  }
+  .option.correct {
+    background: linear-gradient(135deg, #d7f8df, var(--green));
+    border-color: var(--green-strong);
+    color: #1c5a32;
+  }
+  .option.wrong {
+    background: linear-gradient(135deg, #ffdede, #ffb0b0);
+    border-color: #ff6b6b;
+    color: #7a1d1d;
+  }
+  .feedback {
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: 14px;
+    text-align: center;
+    font-weight: bold;
+    display: none;
+  }
+  .feedback.show { display: block; animation: fadeIn 0.3s ease; }
+  .feedback.ok { background: #d7f8df; color: #1c5a32; }
+  .feedback.bad { background: #ffdede; color: #7a1d1d; }
+  .quiz-actions { margin-top: 16px; text-align: center; }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--pink-strong), var(--purple-strong));
+    color: white;
+    border: none;
+    border-radius: 999px;
+    padding: 12px 26px;
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.2s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .final-card {
+    text-align: center;
+    padding: 30px 20px;
+  }
+  .final-card .trophy {
+    font-size: 5rem;
+    display: inline-block;
+    animation: bouncy 1.2s ease infinite;
+  }
+  @keyframes bouncy {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-14px) rotate(3deg); }
+  }
+
+  /* Fill in the blank */
+  .mission-list {
+    display: grid;
+    gap: 16px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .mission {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+  .mission .emoji { font-size: 1.8rem; }
+  .mission input {
+    flex: 1;
+    min-width: 140px;
+    border: 3px dashed var(--pink);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font: inherit;
+    font-size: 1rem;
+    color: var(--text);
+    background: #fff8fc;
+    outline: none;
+    transition: border-color 0.25s, background 0.25s;
+  }
+  .mission input:focus { border-color: var(--pink-strong); }
+  .mission input.ok { border-color: var(--green-strong); background: #e8fbee; }
+  .mission input.bad { border-color: #ff6b6b; background: #fff1f1; animation: shake 0.4s; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+  .mission button {
+    background: var(--green-strong);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    padding: 10px 18px;
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .mission .hint-text {
+    width: 100%;
+    font-size: 0.85rem;
+    color: var(--text-soft);
+    font-style: italic;
+  }
+  .mission .hint-text.bad { color: #c33; font-style: normal; font-weight: bold; }
+  .mission .hint-text.ok { color: var(--green-strong); font-weight: bold; }
+
+  /* Confetti */
+  .confetti-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 150;
+  }
+  .confetti-piece {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    top: -20px;
+    border-radius: 3px;
+    animation: fall 2.5s linear forwards;
+  }
+  @keyframes fall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0.9; }
+  }
+
+  footer {
+    text-align: center;
+    padding: 22px 10px 10px;
+    color: var(--text-soft);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 600px) {
+    body { padding: 10px; }
+    .flashcard { height: 230px; }
+    nav.menu button { padding: 10px 14px; font-size: 0.85rem; }
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <header class="hero">
+      <h1>🌈 Academia de los Estados de la Materia</h1>
+      <p>¡Hola, exploradora! Aprendé jugando sobre sólidos, líquidos y gases ✨</p>
+    </header>
+
+    <div class="stars-box">
+      <div class="stars" id="starsBox">
+        ⭐ Estrellas: <span class="count" id="starCount">0</span>
+      </div>
+    </div>
+
+    <nav class="menu" id="menu">
+      <button data-target="academia" class="active">📚 Academia</button>
+      <button data-target="paisaje">🏞️ Paisaje</button>
+      <button data-target="quizz">🎯 Desafío</button>
+      <button data-target="mision">✏️ Misión</button>
+    </nav>
+
+    <!-- SECCIÓN 1: ACADEMIA -->
+    <section id="academia" class="screen active">
+      <h2 class="section-title">📚 Conocé los estados de la materia</h2>
+      <p style="text-align:center; color:var(--text-soft); margin-bottom:18px;">
+        Tocá cada tarjeta para darla vuelta y descubrir sus secretos 💫
+      </p>
+
+      <div class="cards-grid">
+        <div class="flashcard solid" onclick="this.classList.toggle('flipped')">
+          <div class="flashcard-inner">
+            <div class="flashcard-front">
+              <div class="big-emoji">🧊</div>
+              SÓLIDO
+              <div class="hint">Toca para ver más ✨</div>
+            </div>
+            <div class="flashcard-back">
+              <strong>¿Qué es un sólido?</strong>
+              Tiene forma y tamaño fijos. ¡No se escapa ni cambia solito!
+              <br><br>
+              <strong>Ejemplos:</strong> hielo, piedra, madera, juguetes, lápices 🖍️
+            </div>
+          </div>
+        </div>
+
+        <div class="flashcard liquid" onclick="this.classList.toggle('flipped')">
+          <div class="flashcard-inner">
+            <div class="flashcard-front">
+              <div class="big-emoji">💧</div>
+              LÍQUIDO
+              <div class="hint">Toca para ver más ✨</div>
+            </div>
+            <div class="flashcard-back">
+              <strong>¿Qué es un líquido?</strong>
+              No tiene forma propia: toma la forma del recipiente. ¡Se puede verter!
+              <br><br>
+              <strong>Ejemplos:</strong> agua, leche, jugo, aceite 🥛
+            </div>
+          </div>
+        </div>
+
+        <div class="flashcard gas" onclick="this.classList.toggle('flipped')">
+          <div class="flashcard-inner">
+            <div class="flashcard-front">
+              <div class="big-emoji">💨</div>
+              GASEOSO
+              <div class="hint">Toca para ver más ✨</div>
+            </div>
+            <div class="flashcard-back">
+              <strong>¿Qué es un gas?</strong>
+              No tiene forma ni tamaño fijo. ¡Ocupa todo el espacio que encuentra!
+              <br><br>
+              <strong>Ejemplos:</strong> aire, vapor, humo, el oxígeno 🎈
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="transform-box">
+        <h3>🔄 Las Transformaciones Mágicas</h3>
+        <div class="transform-grid">
+          <div class="transform-card">
+            <div class="flow">🧊 ➡️ 💧</div>
+            <h4>Fusión</h4>
+            <p>El <strong>sólido</strong> se vuelve <strong>líquido</strong>. Ej.: el hielo se derrite al sol ☀️</p>
+          </div>
+          <div class="transform-card">
+            <div class="flow">💧 ➡️ 🧊</div>
+            <h4>Solidificación</h4>
+            <p>El <strong>líquido</strong> se vuelve <strong>sólido</strong>. Ej.: el agua en el freezer se hace hielo ❄️</p>
+          </div>
+          <div class="transform-card">
+            <div class="flow">💧 ➡️ 💨</div>
+            <h4>Evaporación</h4>
+            <p>El <strong>líquido</strong> se vuelve <strong>gas</strong>. Ej.: el agua hirviendo hace vapor ♨️</p>
+          </div>
+          <div class="transform-card">
+            <div class="flow">💨 ➡️ 💧</div>
+            <h4>Condensación</h4>
+            <p>El <strong>gas</strong> se vuelve <strong>líquido</strong>. Ej.: las gotitas en el vaso frío 🥤</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: PAISAJE -->
+    <section id="paisaje" class="screen">
+      <h2 class="section-title">🏞️ El Paisaje Explorador</h2>
+      <div class="landscape-wrap">
+        <p class="instructions">🔍 ¡Encontrá los estados de la materia en este paisaje! Tocá lo que brilla ✨</p>
+        <div class="landscape" id="landscape">
+          <svg viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+            <!-- cielo -->
+            <defs>
+              <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#ffd6ec"/>
+                <stop offset="60%" stop-color="#c5e6ff"/>
+              </linearGradient>
+              <linearGradient id="mountain" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#8c7fbf"/>
+                <stop offset="100%" stop-color="#5e4c8f"/>
+              </linearGradient>
+              <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#a8e6a0"/>
+                <stop offset="100%" stop-color="#5aaa4a"/>
+              </linearGradient>
+              <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#9ad6ff"/>
+                <stop offset="100%" stop-color="#4ea3e0"/>
+              </linearGradient>
+            </defs>
+            <rect width="800" height="450" fill="url(#sky)"/>
+
+            <!-- sol -->
+            <circle cx="680" cy="80" r="46" fill="#ffd84d"/>
+            <circle cx="680" cy="80" r="60" fill="#ffd84d" opacity="0.3"/>
+
+            <!-- nubes -->
+            <g fill="#ffffff">
+              <ellipse cx="140" cy="90" rx="45" ry="20"/>
+              <ellipse cx="170" cy="80" rx="30" ry="18"/>
+              <ellipse cx="110" cy="85" rx="25" ry="15"/>
+
+              <ellipse cx="430" cy="60" rx="40" ry="18"/>
+              <ellipse cx="460" cy="55" rx="25" ry="14"/>
+            </g>
+
+            <!-- montañas -->
+            <polygon points="0,300 180,120 320,300" fill="url(#mountain)"/>
+            <polygon points="200,300 360,100 520,300" fill="url(#mountain)"/>
+            <polygon points="430,300 580,170 720,300" fill="url(#mountain)"/>
+
+            <!-- nieve (sólido) en picos -->
+            <polygon points="140,180 180,120 220,180 200,195 160,195" fill="#ffffff"/>
+            <polygon points="320,170 360,100 400,170 380,185 340,185" fill="#ffffff"/>
+            <polygon points="555,220 580,170 605,220 590,232 570,232" fill="#ffffff"/>
+
+            <!-- humo chimenea (gas) -->
+            <g fill="#e8e3f2" opacity="0.85">
+              <circle cx="250" cy="250" r="10"/>
+              <circle cx="258" cy="232" r="13"/>
+              <circle cx="245" cy="215" r="11"/>
+              <circle cx="262" cy="198" r="9"/>
+            </g>
+
+            <!-- pasto -->
+            <rect x="0" y="300" width="800" height="150" fill="url(#grass)"/>
+
+            <!-- río (líquido) -->
+            <path d="M 0,380 C 150,350 250,420 400,380 C 550,340 650,410 800,380 L 800,450 L 0,450 Z" fill="url(#water)"/>
+            <path d="M 40,385 Q 80,378 120,385" stroke="#ffffff" stroke-width="3" fill="none" opacity="0.7"/>
+            <path d="M 300,395 Q 340,388 380,395" stroke="#ffffff" stroke-width="3" fill="none" opacity="0.7"/>
+            <path d="M 560,390 Q 600,383 640,390" stroke="#ffffff" stroke-width="3" fill="none" opacity="0.7"/>
+
+            <!-- casita -->
+            <rect x="230" y="252" width="60" height="48" fill="#ffcc88"/>
+            <polygon points="220,252 260,215 300,252" fill="#c0443c"/>
+            <rect x="250" y="270" width="18" height="30" fill="#6b3f1a"/>
+
+            <!-- árbol -->
+            <rect x="90" y="255" width="12" height="45" fill="#6b4323"/>
+            <circle cx="96" cy="250" r="22" fill="#5aaa4a"/>
+          </svg>
+
+          <!-- Hotspots invisibles sobre el SVG (porcentaje) -->
+          <div class="hotspot" data-type="solido" style="left:37%; top:30%; width:12%; height:12%;" title="¡Tocame!"></div>
+          <div class="hotspot" data-type="liquido" style="left:45%; top:78%; width:15%; height:14%;" title="¡Tocame!"></div>
+          <div class="hotspot" data-type="gas" style="left:15%; top:16%; width:14%; height:16%;" title="¡Tocame!"></div>
+          <div class="hotspot" data-type="sol" style="left:81%; top:12%; width:12%; height:20%;" title="¡Tocame!"></div>
+          <div class="hotspot" data-type="humo" style="left:29%; top:42%; width:7%; height:14%;" title="¡Tocame!"></div>
+        </div>
+        <p style="text-align:center; margin-top:12px; font-size:0.9rem; color:var(--text-soft);">
+          💡 Pista: hay nieve en las montañas, agua en el río, nubes en el cielo y humito en la chimenea.
+        </p>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: QUIZ -->
+    <section id="quizz" class="screen">
+      <h2 class="section-title">🎯 Desafío de Alternativas</h2>
+      <div class="quiz-box" id="quizBox">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div id="quizContent"></div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 4: MISIÓN -->
+    <section id="mision" class="screen">
+      <h2 class="section-title">✏️ Completá la Misión</h2>
+      <p style="text-align:center; color:var(--text-soft); margin-bottom:18px;">
+        Escribí la palabra correcta y ganá estrellas ⭐
+      </p>
+      <div class="mission-list" id="missionList"></div>
+    </section>
+
+    <footer>
+      Hecho con 💖 para aprender ciencias jugando • Academia de los Estados de la Materia
+    </footer>
+  </div>
+
+  <!-- Popup -->
+  <div class="popup-layer" id="popupLayer">
+    <div class="popup">
+      <div class="pop-emoji" id="popEmoji">✨</div>
+      <h3 id="popTitle">¡Muy bien!</h3>
+      <p id="popMsg">Encontraste algo genial.</p>
+      <button onclick="closePopup()">¡Seguir explorando!</button>
+    </div>
+  </div>
+
+  <div class="confetti-layer" id="confettiLayer"></div>
+
+<script>
+  /* ============ ESTRELLAS ============ */
+  let stars = 0;
+  const starCountEl = document.getElementById('starCount');
+  const starsBoxEl = document.getElementById('starsBox');
+  function addStar(n = 1) {
+    stars += n;
+    starCountEl.textContent = stars;
+    starsBoxEl.classList.add('pulse');
+    setTimeout(() => starsBoxEl.classList.remove('pulse'), 300);
+  }
+
+  /* ============ NAVEGACIÓN ============ */
+  const menu = document.getElementById('menu');
+  menu.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-target]');
+    if (!btn) return;
+    document.querySelectorAll('nav.menu button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const target = btn.dataset.target;
+    document.querySelectorAll('section.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(target).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* ============ POPUP ============ */
+  const popupLayer = document.getElementById('popupLayer');
+  const popEmoji = document.getElementById('popEmoji');
+  const popTitle = document.getElementById('popTitle');
+  const popMsg = document.getElementById('popMsg');
+
+  function showPopup(emoji, title, msg) {
+    popEmoji.textContent = emoji;
+    popTitle.textContent = title;
+    popMsg.textContent = msg;
+    popupLayer.classList.add('show');
+  }
+  function closePopup() { popupLayer.classList.remove('show'); }
+  popupLayer.addEventListener('click', (e) => {
+    if (e.target === popupLayer) closePopup();
+  });
+
+  /* ============ PAISAJE ============ */
+  const hotspotMessages = {
+    solido: { emoji: '🧊', title: '¡Sólido!', msg: 'La nieve y el hielo de la montaña son SÓLIDOS. Tienen forma fija ❄️' },
+    liquido: { emoji: '💧', title: '¡Líquido!', msg: 'El agua del río es un LÍQUIDO. Toma la forma del cauce por donde pasa 🌊' },
+    gas: { emoji: '☁️', title: '¡Gaseoso!', msg: 'Las nubes están hechas de gotitas de agua y vapor. ¡Hay GAS flotando ahí arriba! 💨' },
+    sol: { emoji: '☀️', title: '¡Energía!', msg: 'El Sol no es un estado, pero su calor derrite la nieve (fusión) y evapora el agua. ¡Transforma la materia!' },
+    humo: { emoji: '💨', title: '¡Gaseoso!', msg: 'El humo de la chimenea es un GAS: se escapa y se mezcla con el aire ✨' }
+  };
+  document.querySelectorAll('.hotspot').forEach(h => {
+    h.addEventListener('click', () => {
+      const data = hotspotMessages[h.dataset.type];
+      showPopup(data.emoji, data.title, data.msg);
+    });
+  });
+
+  /* ============ QUIZ ============ */
+  const questions = [
+    {
+      q: "¿Qué proceso ocurre cuando el hielo se derrite?",
+      opts: ["Evaporación", "Fusión", "Condensación", "Solidificación"],
+      correct: 1,
+      hint: "Pasa de sólido a líquido."
+    },
+    {
+      q: "¿En qué estado se encuentran las nubes del cielo?",
+      opts: ["Sólido", "Gaseoso (con gotitas)", "Líquido puro", "Ninguno"],
+      correct: 1,
+      hint: "Están hechas de vapor de agua y gotitas muy chiquitas."
+    },
+    {
+      q: "¿Cómo se llama el paso de LÍQUIDO a GAS?",
+      opts: ["Fusión", "Solidificación", "Evaporación", "Condensación"],
+      correct: 2,
+      hint: "Piensa en el agua hirviendo y el vapor que sale."
+    },
+    {
+      q: "¿Cuál de estos objetos es un SÓLIDO?",
+      opts: ["El jugo de naranja", "El aire", "Un lápiz", "El vapor"],
+      correct: 2,
+      hint: "Busca algo con forma fija."
+    },
+    {
+      q: "Cuando el vapor de agua se convierte en gotitas, ocurre...",
+      opts: ["Condensación", "Evaporación", "Fusión", "Solidificación"],
+      correct: 0,
+      hint: "Pasa de gas a líquido."
+    }
+  ];
+
+  let currentQ = 0;
+  let correctCount = 0;
+  const quizContent = document.getElementById('quizContent');
+  const progressFill = document.getElementById('progressFill');
+
+  function renderQuestion() {
+    if (currentQ >= questions.length) return renderFinal();
+    const q = questions[currentQ];
+    progressFill.style.width = ((currentQ) / questions.length * 100) + '%';
+    quizContent.innerHTML = `
+      <div class="question">🤔 Pregunta ${currentQ + 1} de ${questions.length}<br>${q.q}</div>
+      <div class="options">
+        ${q.opts.map((o, i) => `<button class="option" data-i="${i}">${o}</button>`).join('')}
+      </div>
+      <div class="feedback" id="fb"></div>
+      <div class="quiz-actions">
+        <button class="btn-primary" id="nextBtn" disabled>Siguiente ➡️</button>
+      </div>
+    `;
+    const fb = document.getElementById('fb');
+    const nextBtn = document.getElementById('nextBtn');
+    let answered = false;
+
+    quizContent.querySelectorAll('.option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (answered) return;
+        answered = true;
+        const i = Number(btn.dataset.i);
+        quizContent.querySelectorAll('.option').forEach(b => b.disabled = true);
+        if (i === q.correct) {
+          btn.classList.add('correct');
+          fb.className = 'feedback ok show';
+          fb.innerHTML = '🎉 ¡Correcto! ¡Sos una genia! +1 ⭐';
+          addStar();
+          correctCount++;
+        } else {
+          btn.classList.add('wrong');
+          quizContent.querySelector(`.option[data-i="${q.correct}"]`).classList.add('correct');
+          fb.className = 'feedback bad show';
+          fb.innerHTML = `💪 ¡No te rindas! La respuesta era <strong>${q.opts[q.correct]}</strong>. ${q.hint}`;
+        }
+        nextBtn.disabled = false;
+      });
+    });
+
+    nextBtn.addEventListener('click', () => {
+      currentQ++;
+      renderQuestion();
+    });
+  }
+
+  function renderFinal() {
+    progressFill.style.width = '100%';
+    const perfect = correctCount === questions.length;
+    quizContent.innerHTML = `
+      <div class="final-card">
+        <div class="trophy">${perfect ? '🏆' : '🌟'}</div>
+        <h3 style="margin:14px 0; color:var(--purple-strong); font-size:1.5rem;">
+          ${perfect ? '¡MISIÓN PERFECTA!' : '¡Muy buen trabajo!'}
+        </h3>
+        <p style="color:var(--text-soft); margin-bottom:18px; font-size:1.05rem;">
+          Acertaste <strong>${correctCount} de ${questions.length}</strong> preguntas ${perfect ? '✨ ¡Eres una científica increíble!' : '¡Seguí practicando y lo vas a dominar!'}
+        </p>
+        <button class="btn-primary" onclick="resetQuiz()">🔁 Jugar de nuevo</button>
+      </div>
+    `;
+    if (perfect) launchConfetti();
+  }
+
+  function resetQuiz() {
+    currentQ = 0;
+    correctCount = 0;
+    renderQuestion();
+  }
+  renderQuestion();
+
+  /* ============ CONFETI ============ */
+  function launchConfetti() {
+    const layer = document.getElementById('confettiLayer');
+    const colors = ['#ff7eb3', '#5fa8e8', '#4fcc7c', '#ffd84d', '#a480f2', '#ff9a4d'];
+    for (let i = 0; i < 80; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.left = Math.random() * 100 + '%';
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.animationDelay = (Math.random() * 0.6) + 's';
+      piece.style.animationDuration = (2 + Math.random() * 1.5) + 's';
+      piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+      if (Math.random() > 0.5) piece.style.borderRadius = '50%';
+      layer.appendChild(piece);
+      setTimeout(() => piece.remove(), 4000);
+    }
+  }
+
+  /* ============ MISIÓN (COMPLETAR) ============ */
+  const missions = [
+    { text: "El paso de líquido a gas se llama", emoji: "♨️", answers: ["evaporacion", "evaporación"], hint: "Piensa en el agua hirviendo 🔥" },
+    { text: "El hielo es un ejemplo de estado", emoji: "🧊", answers: ["solido", "sólido"], hint: "Tiene forma fija ❄️" },
+    { text: "El proceso donde el agua se vuelve hielo es la", emoji: "❄️", answers: ["solidificacion", "solidificación"], hint: "De líquido a sólido." },
+    { text: "Las nubes y el vapor son ejemplos de estado", emoji: "☁️", answers: ["gaseoso", "gas"], hint: "No tiene forma fija y ocupa todo el espacio." },
+    { text: "Cuando el vapor de agua se transforma en gotitas se llama", emoji: "💧", answers: ["condensacion", "condensación"], hint: "De gas a líquido 🥤" }
+  ];
+
+  function normalize(s) {
+    return s.trim().toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  }
+
+  const missionList = document.getElementById('missionList');
+  missions.forEach((m, idx) => {
+    const row = document.createElement('div');
+    row.className = 'mission';
+    row.innerHTML = `
+      <span class="emoji">${m.emoji}</span>
+      <span>${m.text}</span>
+      <input type="text" placeholder="Escribí acá..." aria-label="respuesta" />
+      <button type="button">Comprobar ✓</button>
+      <div class="hint-text">💡 Pista: ${m.hint}</div>
+    `;
+    const input = row.querySelector('input');
+    const btn = row.querySelector('button');
+    const hint = row.querySelector('.hint-text');
+    let solved = false;
+
+    function check() {
+      if (solved) return;
+      const val = normalize(input.value);
+      if (!val) return;
+      const correct = m.answers.some(a => normalize(a) === val);
+      if (correct) {
+        solved = true;
+        input.classList.remove('bad');
+        input.classList.add('ok');
+        input.disabled = true;
+        btn.disabled = true;
+        btn.textContent = '¡Correcto! ⭐';
+        hint.className = 'hint-text ok';
+        hint.textContent = '🎉 ¡Genial! Ganaste una estrella.';
+        addStar();
+        if (document.querySelectorAll('.mission input.ok').length === missions.length) {
+          setTimeout(launchConfetti, 200);
+        }
+      } else {
+        input.classList.add('bad');
+        hint.className = 'hint-text bad';
+        hint.textContent = '💪 Casi... intentá de nuevo. ' + m.hint;
+        setTimeout(() => input.classList.remove('bad'), 500);
+      }
+    }
+
+    btn.addEventListener('click', check);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') check();
+    });
+    missionList.appendChild(row);
+  });
+</script>
+</body>
+</html>
