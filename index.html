@@ -190,6 +190,11 @@
   .flashcard.solid .flashcard-front, .flashcard.solid .flashcard-back { background: linear-gradient(135deg, #e0e8ff, var(--blue)); }
   .flashcard.liquid .flashcard-front, .flashcard.liquid .flashcard-back { background: linear-gradient(135deg, #d6f0ff, #7fc7f0); color: #103a5c; }
   .flashcard.gas .flashcard-front, .flashcard.gas .flashcard-back { background: linear-gradient(135deg, #fff0fa, var(--pink)); }
+  .flashcard.plasma .flashcard-front, .flashcard.plasma .flashcard-back {
+    background: linear-gradient(135deg, #ffd1a8, #ff9a4d);
+    color: #5a2b0a;
+    box-shadow: 0 0 30px rgba(255, 154, 77, 0.5), var(--shadow);
+  }
   .flashcard .hint { margin-top: 12px; font-size: 0.8rem; opacity: 0.75; font-weight: normal; }
 
   /* Transformations diagram */
@@ -517,7 +522,7 @@
   <div class="app">
     <header class="hero">
       <h1>🌈 Academia de los Estados de la Materia</h1>
-      <p>¡Hola, exploradora! Aprendé jugando sobre sólidos, líquidos y gases ✨</p>
+      <p>¡Hola, exploradora! Aprendé jugando sobre sólidos, líquidos, gases y plasma ✨</p>
     </header>
 
     <div class="stars-box">
@@ -585,6 +590,22 @@
               No tiene forma ni tamaño fijo. ¡Ocupa todo el espacio que encuentra!
               <br><br>
               <strong>Ejemplos:</strong> aire, vapor, humo, el oxígeno 🎈
+            </div>
+          </div>
+        </div>
+
+        <div class="flashcard plasma" onclick="this.classList.toggle('flipped')">
+          <div class="flashcard-inner">
+            <div class="flashcard-front">
+              <div class="big-emoji">⚡</div>
+              PLASMA
+              <div class="hint">Toca para ver más ✨</div>
+            </div>
+            <div class="flashcard-back">
+              <strong>¿Qué es el plasma?</strong>
+              Es el <strong>cuarto estado</strong> de la materia. Es como un gas SÚPER caliente y brillante, lleno de energía ⚡
+              <br><br>
+              <strong>Ejemplos:</strong> el Sol ☀️, los rayos de tormenta 🌩️, el fuego y las luces de neón 💡
             </div>
           </div>
         </div>
@@ -791,7 +812,7 @@
     solido: { emoji: '🧊', title: '¡Sólido!', msg: 'La nieve y el hielo de la montaña son SÓLIDOS. Tienen forma fija ❄️' },
     liquido: { emoji: '💧', title: '¡Líquido!', msg: 'El agua del río es un LÍQUIDO. Toma la forma del cauce por donde pasa 🌊' },
     gas: { emoji: '☁️', title: '¡Gaseoso!', msg: 'Las nubes están hechas de gotitas de agua y vapor. ¡Hay GAS flotando ahí arriba! 💨' },
-    sol: { emoji: '☀️', title: '¡Energía!', msg: 'El Sol no es un estado, pero su calor derrite la nieve (fusión) y evapora el agua. ¡Transforma la materia!' },
+    sol: { emoji: '⚡', title: '¡Plasma!', msg: '¡El Sol es PLASMA! El cuarto estado de la materia: un gas súper caliente y cargado de energía. Además, su calor derrite la nieve y evapora el agua 🔥' },
     humo: { emoji: '💨', title: '¡Gaseoso!', msg: 'El humo de la chimenea es un GAS: se escapa y se mezcla con el aire ✨' }
   };
   document.querySelectorAll('.hotspot').forEach(h => {
@@ -832,6 +853,12 @@
       opts: ["Condensación", "Evaporación", "Fusión", "Solidificación"],
       correct: 0,
       hint: "Pasa de gas a líquido."
+    },
+    {
+      q: "¿En qué estado de la materia se encuentra el Sol? ⚡",
+      opts: ["Sólido", "Líquido", "Gaseoso", "Plasma"],
+      correct: 3,
+      hint: "Es el CUARTO estado: súper caliente y lleno de energía."
     }
   ];
 
@@ -935,7 +962,8 @@
     { text: "El hielo es un ejemplo de estado", emoji: "🧊", answers: ["solido", "sólido"], hint: "Tiene forma fija ❄️" },
     { text: "El proceso donde el agua se vuelve hielo es la", emoji: "❄️", answers: ["solidificacion", "solidificación"], hint: "De líquido a sólido." },
     { text: "Las nubes y el vapor son ejemplos de estado", emoji: "☁️", answers: ["gaseoso", "gas"], hint: "No tiene forma fija y ocupa todo el espacio." },
-    { text: "Cuando el vapor de agua se transforma en gotitas se llama", emoji: "💧", answers: ["condensacion", "condensación"], hint: "De gas a líquido 🥤" }
+    { text: "Cuando el vapor de agua se transforma en gotitas se llama", emoji: "💧", answers: ["condensacion", "condensación"], hint: "De gas a líquido 🥤" },
+    { text: "El Sol y los rayos de tormenta son ejemplos del cuarto estado llamado", emoji: "⚡", answers: ["plasma"], hint: "Es como un gas súper caliente y brillante." }
   ];
 
   function normalize(s) {
